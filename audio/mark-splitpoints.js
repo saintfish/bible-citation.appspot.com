@@ -10,7 +10,7 @@ app.controller("AudioAnnotatorCtrl", ["$scope", "$sce", function($scope, $sce) {
         a.src = "http://audio.wordproaudio.com/bibles/app/audio/4/" + $scope.ref.book + "/" + $scope.ref.chapter + ".mp3";
         a.load();
     };
-    a.oncanplaythrough = function () {
+    a.onloadedmetadata = function () {
         if ($scope.audio.loaded) return;
         $scope.$apply(function () {
             $scope.audio.loaded = true;
