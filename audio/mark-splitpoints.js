@@ -1,13 +1,15 @@
-var app = angular.module('splitpointsApp',[]);
+var app = angular.module('splitpointsApp',['ngTouch']);
 
 app.controller("AudioAnnotatorCtrl", ["$scope", "$sce", function($scope, $sce) {
+    var a = document.getElementById("audio");
     $scope.audio = {};
     $scope.setAudio = function () {
         $scope.audio.loaded = false;
-        $scope.audio.url = $sce.trustAsResourceUrl("http://audio.wordproaudio.com/bibles/app/audio/4/" + $scope.ref.book + "/" + $scope.ref.chapter + ".mp3");
+        // $scope.audio.url = $sce.trustAsResourceUrl();
         $scope.audio.bibleUrl = $sce.trustAsResourceUrl(sprintf("http://www.wordproject.org/bibles/gb/%02d/%d.htm", $scope.ref.book, $scope.ref.chapter));
+        a.src = "http://audio.wordproaudio.com/bibles/app/audio/4/" + $scope.ref.book + "/" + $scope.ref.chapter + ".mp3";
+        a.load();
     };
-    var a = document.getElementById("audio");
     a.oncanplaythrough = function () {
         if ($scope.audio.loaded) return;
         $scope.$apply(function () {

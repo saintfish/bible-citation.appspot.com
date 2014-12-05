@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style type="text/css">#chapter {
+<meta charset="utf-8"/>
+<title>Annotate audio bible</title>
+<style type="text/css">
+#chapter {
     width: 35px;
 }
 button.big {
-    width: 100px;
-    height: 50px;
+    width: 100%;
+    height: 100px;
 }
 #container {
 	position: absolute;
@@ -42,12 +45,12 @@ button.big {
 <script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
 <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="/bower_components/sprintf/dist/sprintf.min.js"></script>
+<script type="text/javascript" src="/bower_components/angular-touch/angular-touch.min.js"></script>
 <script type="text/javascript" src="mark-splitpoints.js"></script>
-<title>Annotate audio bible</title>
-<meta name="viewport" content="width=device-width, initial-scale=2">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body ng-app="splitpointsApp">
-<!-- Start your code here -->
 
 <div ng-controller="AudioAnnotatorCtrl" id="container">
 	<div id="top">
@@ -124,7 +127,7 @@ button.big {
 	        <button ng-click="setAudio()">Start</button>
 	    </div>
 	    <div>
-	        <audio id="audio" src="{{audio.url}}" controls></audio>
+	        <audio id="audio" preload="auto" controls></audio>
 	    </div>
 	    <div ng-show="audio.loaded">
 	        <div>
@@ -134,7 +137,7 @@ button.big {
 	            <button ng-click="moveAudioTime(5)">&gt;&gt; 5s</button>
 	        </div>
 	        <div>
-	            <button class="big" ng-click="addSplitpoint()">Set Splitpoint</button>
+	            <button class="big" ng-mousedown="addSplitpoint()" ng-touchstart="addSplitpoint()">Set Splitpoint</button>
 	        </div>
 	        <div>
 	            <table>
@@ -162,7 +165,5 @@ button.big {
 	</div>
 	
 </div>
-<!-- End your code here -->
-
 </body>
 </html>
