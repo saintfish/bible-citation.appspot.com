@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">#chapter {
+    width: 35px;
+}
+button.big {
+    width: 100px;
+    height: 50px;
+}
+#container {
+	position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+#top {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 50%;
+    overflow: scroll;
+}
+
+#bottom {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    overflow: scroll;
+}
+
+#bottom iframe {
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+<script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/bower_components/sprintf/dist/sprintf.min.js"></script>
+<script type="text/javascript" src="mark-splitpoints.js"></script>
+<title>Annotate audio bible</title>
+<meta name="viewport" content="width=device-width, initial-scale=2">
+</head>
+<body ng-app="splitpointsApp">
+<!-- Start your code here -->
+
+<div ng-controller="AudioAnnotatorCtrl" id="container">
+	<div id="top">
+	    <div>
+	        <select ng-model="ref.book">
+	            <option value="1">創世記</option>
+	            <option value="2">出埃及記</option>
+	            <option value="3">利未記</option>
+	            <option value="4">民數記</option>
+	            <option value="5">申命記</option>
+	            <option value="6">約書亞記</option>
+	            <option value="7">士師記</option>
+	            <option value="8">路得記</option>
+	            <option value="9">撒母耳記上</option>
+	            <option value="10">撒母耳記下</option>
+	            <option value="11">列王紀上</option>
+	            <option value="12">列王紀下</option>
+	            <option value="13">歷代志上</option>
+	            <option value="14">歷代志下</option>
+	            <option value="15">以斯拉記</option>
+	            <option value="16">尼希米記</option>
+	            <option value="17">以斯帖記</option>
+	            <option value="18">約伯記</option>
+	            <option value="19">詩篇</option>
+	            <option value="20">箴言</option>
+	            <option value="21">傳道書</option>
+	            <option value="22">雅歌</option>
+	            <option value="23">以賽亞書</option>
+	            <option value="24">耶利米書</option>
+	            <option value="25">耶利米哀歌</option>
+	            <option value="26">以西結書</option>
+	            <option value="27">但以理書</option>
+	            <option value="28">何西阿書</option>
+	            <option value="29">約珥書</option>
+	            <option value="30">阿摩司書</option>
+	            <option value="31">俄巴底亞書</option>
+	            <option value="32">約拿書</option>
+	            <option value="33">彌迦書</option>
+	            <option value="34">那鴻書</option>
+	            <option value="35">哈巴谷書</option>
+	            <option value="36">西番雅書</option>
+	            <option value="37">哈該書</option>
+	            <option value="38">撒迦利亞書</option>
+	            <option value="39">瑪拉基書</option>
+	            <option value="40">馬太福音</option>
+	            <option value="41">馬可福音</option>
+	            <option value="42">路加福音</option>
+	            <option value="43">約翰福音</option>
+	            <option value="44">使徒行傳</option>
+	            <option value="45">羅馬書</option>
+	            <option value="46">哥林多前書</option>
+	            <option value="47">哥林多後書</option>
+	            <option value="48">加拉太書</option>
+	            <option value="49">以弗所書</option>
+	            <option value="50">腓立比書</option>
+	            <option value="51">歌羅西書</option>
+	            <option value="52">帖撒羅尼迦前書</option>
+	            <option value="53">帖撒羅尼迦後書</option>
+	            <option value="54">提摩太前書</option>
+	            <option value="55">提摩太後書</option>
+	            <option value="56">提多書</option>
+	            <option value="57">腓利門書</option>
+	            <option value="58">希伯來書</option>
+	            <option value="59">雅各書</option>
+	            <option value="60">彼得前書</option>
+	            <option value="61">彼得後書</option>
+	            <option value="62">約翰壹書</option>
+	            <option value="63">約翰貳書</option>
+	            <option value="64">約翰參書</option>
+	            <option value="65">猶大書</option>
+	            <option value="66">啟示錄</option>
+	        </select>
+	        <input type="number" id="chapter" size="3" ng-model="ref.chapter" />
+	        <button ng-click="setAudio()">Start</button>
+	    </div>
+	    <div>
+	        <audio id="audio" src="{{audio.url}}" controls></audio>
+	    </div>
+	    <div ng-show="audio.loaded">
+	        <div>
+	            <button ng-click="moveAudioTime(-5)">&lt;&lt; 5s</button>
+	            <button ng-click="moveAudioTime(-1)">&lt; 1s</button>
+	            <button ng-click="moveAudioTime(1)">&gt; 1s</button>
+	            <button ng-click="moveAudioTime(5)">&gt;&gt; 5s</button>
+	        </div>
+	        <div>
+	            <button class="big" ng-click="addSplitpoint()">Set Splitpoint</button>
+	        </div>
+	        <div>
+	            <table>
+	                <tr>
+	                    <td>#</td>
+	                    <td>Time</td>
+	                    <td></td>
+	                </tr>
+	                <tr ng-repeat="p in splitpoints">
+	                    <td>{{$index}}</td>
+	                    <td><a ng-click="setAudioTime(p)" href="">{{p}}</a>
+
+	                    </td>
+	                    <td><a ng-hide="$first || $last" ng-click="splitpoints.splice($index, 1)" href="">x</a>
+
+	                    </td>
+	                </tr>
+	            </table>
+	            <textarea id="trackList">{{trackList()}}</textarea>
+	        </div>
+	    </div>
+	</div>
+	<div id="bottom">
+		<iframe src="{{audio.bibleUrl}}"></iframe>
+	</div>
+	
+</div>
+<!-- End your code here -->
+
+</body>
+</html>
